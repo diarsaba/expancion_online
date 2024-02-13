@@ -1,0 +1,152 @@
+{
+    "entri_cards": {
+        "armys":"",
+        "builds":"",
+        "devs":""
+    },
+    "armys_cards": {
+        "farmer":"",
+        "knight":"",
+        "strong_knight":"",
+        "elite_knight":""
+    },
+    "builds_cards": {
+        "wooden_tower":"",
+        "stone_tower":"",
+        "farm":""
+    },
+    "devs_cards": {
+        "":""
+    },
+    "ui_runtime": {
+        "violet": {
+            "name":"violet",
+            "image":"violet_alpha.png",
+            "command":"violet_alpha"
+        },
+        "black": {
+            "name":"black ",
+            "image":"black_alpha.png",
+            "command":"black_alpha"
+        },
+        "black_line": {
+            "name":"black line",
+            "image":"black_line.png",
+            "command":"black_line"
+        },
+        "black_blur": {
+            "name":"black blur",
+            "image":"black_blur.png",
+            "command":"black_blur"
+        },
+        "white_line": {
+            "name":"white line",
+            "image":"white_line.png",
+            "command":"white_line"
+        },
+        "white_blur": {
+            "name":"white blur",
+            "image":"white_blur.png",
+            "command":"white_blur"
+        }
+    },
+    "0": {
+        "name":"pixel",
+        "image":"pixel.png",
+        "command":"pixel"
+    },
+
+
+    "7": {
+        "name":"Farmer",
+        "image":"farmer_a.png",
+        "command":"farmer_A_character"
+    },
+    "8": {
+        "name":"Knight",
+        "image":"knight_a.png",
+        "command":"knight_A_character"
+    },
+    "9": {
+        "name":"Strong Knight",
+        "image":"strong_knight_a.png",
+        "command":"strong_knight_A_character"
+    },
+    "9a": {
+        "name":"Elite Knight",
+        "image":"elite_knight_a.png",
+        "command":"elite_knight_A_character"
+    },
+    "10": {
+        "name":"Wooden Tower",
+        "image":"wooden_tower_a.png",
+        "command":"wooden_tower_A_character",
+        "horizontal":"wooden_tower_horizontal.png",
+        "vertical":"wooden_tower_vertical.png"
+    },
+    "11": {
+        "name":"Stone Tower",
+        "image":"stone_tower_a.png",
+        "command":"stone_tower_A_character"
+    },
+    "12": {
+        "name":"Farm",
+        "image":"farm_a.png",
+        "command":"farm_A_character"
+    },
+    "13": {
+        "name":"Town",
+        "image":"town_a.png",
+        "command":"town_A_character"
+    },
+    "14": {
+        "name":"Farmer",
+        "image":"farmer_a.png",
+        "command":"farmer_A_character"
+    },
+    "15": {
+        "name":"Knight",
+        "image":"knight_a.png",
+        "command":"knight_A_character"
+    },
+    "16": {
+        "name":"Strong Knight",
+        "image":"strong_knight_a.png",
+        "command":"strong_knight_A_character"
+    },
+    "17": {
+        "name":"Wooden Tower",
+        "image":"wooden_tower_a.png",
+        "command":"wooden_tower_A_character"
+    },
+    "18": {
+        "name":"Stone Tower",
+        "image":"stone_tower_a.png",
+        "command":"stone_tower_A_character"
+    },
+    "19": {
+        "name":"Farm",
+        "image":"farm_a.png",
+        "command":"farm_A_character"
+    },
+    "20": {
+        "name":"Town",
+        "image":"town_a.png",
+        "command":"town_A_character"
+    },
+    "21": {
+        "name":"Tree",
+        "image":"tree.png",
+        "command":"tree_character"
+    },
+    "22": {
+        "name":"Bridge",
+        "image":"bridge.png",
+        "command":"bridge_character"
+    },
+    "23": {
+        "name":"Water",
+        "image":"water.png",
+        "command":"water_character"
+    }
+}

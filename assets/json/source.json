@@ -1,0 +1,59 @@
+{
+    "Farmer": {
+        "image": "farmer_a.png"
+    },
+    "Knight": {
+        "image": "knight_a.png",
+        "tilemap": "",
+        "sound": ""
+    },
+    "Strong Knight": {
+        "image": "strong_knight_a.png",
+        "tilemap": "",
+        "sound": ""
+    },
+    "Elite Knight": {
+        "image": "elite_knight_a.png"
+    },
+    "Wooden Tower": {
+        "image": "wooden_tower_a.png",
+        "horizontal": "wooden_tower_horizontal.png",
+        "vertical": "wooden_tower_vertical.png"
+    },
+    "Stone Tower": {
+        "image": "stone_tower_a.png",
+        "horizontal": "stone_tower_horizontal.png",
+        "vertical": "stone_tower_vertical.png"
+    },
+    "Farm": {
+        "image": "farm_a.png"
+    },
+    "Town": {
+        "image": "town_a.png",
+        "tilemap": "",
+        "sound": ""
+    },
+    "River": {
+        "image": "knight_a.png",
+        "tilemap": "",
+        "sound": ""
+    },
+    "Ambien": {
+        "sound": ""
+    },
+    "Forest": {
+        "image": "knight_a.png",
+        "tilemap": "",
+        "sound": ""
+    },
+    "Violet": {
+        "image": "violet_alpha.png",
+        "tilemap": "",
+        "sound": ""
+    },
+    "Influence": {
+        "image": "white_blur.png",
+        "tilemap": "",
+        "sound": ""
+    }
+}

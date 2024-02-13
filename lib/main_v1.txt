@@ -1,0 +1,274 @@
+//import 'dart:math';
+// ignore_for_file: avoid_print
+
+import 'package:expancion_online/grid.dart';
+import 'package:expancion_online/handlers.txt';
+import 'package:expancion_online/loader.dart';
+import 'package:expancion_online/routermap.dart';
+import 'package:flame/components.dart';
+import 'package:flame/events.dart';
+//import 'package:flame/extensions.dart';
+import 'package:flame/flame.dart';
+import 'package:flame/game.dart';
+//import 'package:flame/palette.dart';
+//import 'package:flame/sprite.dart';
+import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/material.dart';
+import 'ui_controller.dart';
+
+final UIDataController uidatacontroller = UIDataController();
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Flame.device.fullScreen();
+
+  final routermap = Routermap("Entry");
+  final assetloader = AssetLoader();
+
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: GameWidget(
+          game: MyExpancionOnline(routermap, assetloader),
+          overlayBuilderMap: {
+            'UIController': (BuildContext context, MyExpancionOnline game) {
+              return UIController(
+                game: game,
+                controller: uidatacontroller,
+                routermap: routermap,
+                assetloader: assetloader,
+              );
+            }
+          },
+        ),
+      ),
+    ),
+  );
+}
+
+class MyExpancionOnline extends FlameGame
+    with ScaleDetector, TapDetector, ScrollDetector {
+  late SpriteComponent background;
+
+  Listgrid listgrid = Listgrid(70, 44, "grid", 40);
+
+  final double _maxZoom = 2;
+  final double _minZoom = 0.3;
+
+  double scale = .5;
+  double originx = 0;
+  double originy = 0;
+
+  double prevw = 0;
+  double prevh = 0;
+  double oldscale = 1;
+
+  int saco = 100;
+  int moneda = 5;
+
+  late SpriteComponent grid;
+
+  final Routermap router;
+  final AssetLoader assetloader;
+
+  MyExpancionOnline(this.router, this.assetloader);
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+
+    camera.viewfinder
+      ..zoom = scale
+      ..anchor = Anchor.topLeft;
+
+    Sprite backgroundSprite = await loadSprite("map.jpg");
+    background = SpriteComponent()..sprite = backgroundSprite;
+
+    world.add(background);
+
+    FlameAudio.bgm.initialize();
+    FlameAudio.audioCache.load('Ambient3.mp3');
+    //FlameAudio.bgm.play("Ambient3.mp3");
+    overlays.add('UIController');
+    //showgrid();
+
+    listgrid.displayOn(background);
+  }
+
+  void undo() {
+    print("UNDO");
+  }
+
+  void nextDay() {
+    print("NEXT DAY");
+  }
+
+  void saveStatus() {
+    listgrid.save();
+    print("save status");
+  }
+
+  void userback() {
+    //listgrid.hideArea();
+  }
+
+  void showArea() {
+    listgrid.showArea(source, stacks, router);
+  }
+
+  void money() {
+    uidatacontroller.updateMoney(saco, moneda);
+  }
+
+  @override
+  Future<void> onTapUp(TapUpInfo info) async {
+    saco = await listgrid.tapHandler(
+        camera.globalToLocal(info.eventPosition.global),
+        source,
+        stacks,
+        router,
+        background,
+        saco);
+    money();
+  }
+
+  // @override
+  // void onScaleStart(ScaleStartInfo info) {
+  //   _startZoom = camera.viewfinder.zoom;
+  // }
+
+  // @override
+  // void onScaleUpdate(ScaleUpdateInfo info) {
+  //   final currentScale = info.scale.global;
+
+  //   if (currentScale.isIdentity()) {
+  //     // One-finger gesture
+  //     _processDrag(info.delta.global);
+  //   } else {
+  //     // Several fingers gesture
+  //     _processScale(info, currentScale);
+  //   }
+  // }
+
+  // @override
+  // void onScaleEnd(ScaleEndInfo info) {
+  //   //_checkScaleBorders();
+  //   _checkDragBorders();
+  // }
+
+  // void _checkDragBorders() {
+  //   camera.viewfinder.zoom = camera.viewfinder.zoom.clamp(_minZoom, _maxZoom);
+  // }
+
+  // void _processDrag(Vector2 delta) {
+  //   final worldRect = camera.visibleWorldRect;
+
+  //   final zoomDragFactor = 1.0 /
+  //       _startZoom; // To synchronize a drag distance with current zoom value
+  //   final currentPosition = camera.viewfinder.position;
+
+  //   final mapSize = Offset(background.width, background.height);
+
+  //   late double xTranslation = -delta.x * zoomDragFactor;
+  //   late double yTranslation = -delta.y * zoomDragFactor;
+
+  //   if ((worldRect.topLeft.dx < 0.0 || worldRect.topLeft.dx == 0) &&
+  //       xTranslation < 0) {
+  //     xTranslation = -worldRect.topLeft.dx;
+  //   } else if ((worldRect.bottomRight.dx > mapSize.dx ||
+  //           worldRect.bottomRight.dx == mapSize.dx) &&
+  //       xTranslation > 0) {
+  //     xTranslation = mapSize.dx - worldRect.bottomRight.dx;
+  //   }
+
+  //   if ((worldRect.topLeft.dy < 0.0 || worldRect.topLeft.dy == 0) &&
+  //       yTranslation < 0) {
+  //     yTranslation = -worldRect.topLeft.dy;
+  //   } else if ((worldRect.bottomRight.dy > mapSize.dy ||
+  //           worldRect.bottomRight.dy == mapSize.dy) &&
+  //       yTranslation > 0) {
+  //     yTranslation = mapSize.dy - worldRect.bottomRight.dy;
+  //   }
+
+  //   camera.viewfinder.position = currentPosition.translated(
+  //     xTranslation,
+  //     yTranslation,
+  //   );
+  // }
+
+  // void _processScale(ScaleUpdateInfo info, Vector2 currentScale) {
+  //   final newZoom = _startZoom * ((currentScale.y + currentScale.x) / 2.0);
+  //   camera.viewfinder.zoom = newZoom.clamp(_minZoom, _maxZoom);
+  // }
+
+  // void _checkScaleBorders() {
+  //   camera.viewfinder.zoom = camera.viewfinder.zoom.clamp(_minZoom, _maxZoom);
+  // }
+
+  // @override
+  // void render(Canvas canvas) {
+  //   super.render(canvas);
+  // }
+
+  // Future<void> showgrid() async {
+  //   grid = SpriteComponent(
+  //     sprite: await Sprite.load('map_grid_.png'),
+  //   )
+  //     ..anchor = Anchor.topLeft
+  //     ..position = Vector2(0, 0)
+  //     ..priority = 1;
+  //   background.add(grid);
+  // }
+
+  // hidegrid() {
+  //   grid.removeFromParent();
+  // }
+
+  @override
+  void onScroll(PointerScrollInfo info) {
+    final currentPosition = camera.viewfinder.position;
+
+    var mousex = info.eventPosition.global.x;
+    var mousey = info.eventPosition.global.y;
+
+    //final mapSize = Offset(background.width, background.height);
+    final worldRect = camera.visibleWorldRect;
+
+    var deltaZoom = info.scrollDelta.global.y > 0 ? 0.01 : -0.01;
+
+    final newZoom = camera.viewfinder.zoom + deltaZoom;
+    var clampedZoom = newZoom.clamp(_minZoom, _maxZoom);
+    final oldscale = camera.viewfinder.zoom;
+
+    originx = (mousex / oldscale) - (mousex / clampedZoom);
+    originy = (mousey / oldscale) - (mousey / clampedZoom);
+
+    if (worldRect.topLeft.dx + originx < 0) {
+      originx = 0;
+    }
+    if (worldRect.topLeft.dy + originy < 0) {
+      originy = 0;
+    }
+
+    // if (camera.visibleWorldRect.topRight.distance > mapSize.dx) {
+    //   var out = camera.visibleWorldRect.topRight.distance - mapSize.dx;
+    //   print("OUT $out");
+    //   originx = -out;
+    // }
+
+    // if (camera.visibleWorldRect.bottomLeft.distance > mapSize.dy) {
+    //   var out = camera.visibleWorldRect.bottomLeft.distance - mapSize.dy;
+    //   originy = -out;
+    // }
+
+    // print("${worldRect.bottomRight.dx } ${camera.visibleWorldRect.topRight.distance} ${mapSize.dx } ${originx}");
+
+    camera.viewfinder.zoom = clampedZoom;
+
+    camera.viewfinder.position = currentPosition.translated(
+      originx,
+      originy,
+    );
+  }
+}

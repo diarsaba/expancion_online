@@ -1,0 +1,266 @@
+{
+    "Entry": [
+        {
+            "name": "Knight",
+            "field": "army",
+            "command": "Army"
+        },
+        {
+            "name": "Wooden Tower",
+            "field": "build",
+            "command": "Build"
+        },
+        {
+            "name": "Town",
+            "field": "town",
+            "command": "Town_info"
+        },
+        {
+            "name": "Stone Tower",
+            "field": "dev",
+            "command": "Dev"
+        }
+    ],
+    "Army": [
+        {
+            "name": "Farmer",
+            "field": "Farmer",
+            "command": "Farmer_info",
+            "price": "10",
+            "charge": "-2",
+            "damage": "1"
+        },
+        {
+            "name": "Knight",
+            "field": "Knight",
+            "command": "Knight_info",
+            "price": "20",
+            "charge": "-5",
+            "damage": "2"
+        },
+        {
+            "name": "Strong Knight",
+            "field": "Strong Knig",
+            "command": "Strong Knight_info",
+            "price": "30",
+            "charge": "-12",
+            "damage": "3"
+        },
+        {
+            "name": "Elite Knight",
+            "field": "Elite Knight",
+            "command": "Elite Knight_info",
+            "price": "40",
+            "charge": "-26",
+            "damage": "4"
+        }
+    ],
+    "Build": [
+        {
+            "name": "Wooden Tower",
+            "field": "Tower",
+            "command": "Wooden Tower_info",
+            "price": "5",
+            "charge": "-0",
+            "damage": "2"
+        },
+        {
+            "name": "Stone Tower",
+            "field": "Stone Tower",
+            "command": "Stone Tower_info",
+            "price": "10",
+            "charge": "-2",
+            "damage": "3"
+        },
+        {
+            "name": "Farm",
+            "field": "Farm",
+            "command": "Farm_info",
+            "price": "75",
+            "charge": "+5",
+            "damage": "0"
+        }
+    ],
+    "Dev": [
+        {
+            "name": "Farmer",
+            "field": "Farmer",
+            "command": "Farmer_info",
+            "price": "10",
+            "charge": "-2",
+            "damage": "1"
+        },
+        {
+            "name": "Knight",
+            "field": "Knight",
+            "command": "Knight_info",
+            "price": "20",
+            "charge": "-5",
+            "damage": "2"
+        },
+        {
+            "name": "Strong Knight",
+            "field": "Strong Knig",
+            "command": "Strong Knight_info",
+            "price": "30",
+            "charge": "-12",
+            "damage": "3"
+        },
+        {
+            "name": "Elite Knight",
+            "field": "Elite Knight",
+            "command": "Elite Knight_info",
+            "price": "40",
+            "charge": "-26",
+            "damage": "4"
+        },
+        {
+            "name": "Wooden Tower",
+            "field": "Tower",
+            "command": "Wooden Tower_info",
+            "price": "5",
+            "charge": "-0",
+            "damage": "2"
+        },
+        {
+            "name": "Stone Tower",
+            "field": "Stone Tower",
+            "command": "Stone Tower_info",
+            "price": "10",
+            "charge": "-2",
+            "damage": "3"
+        },
+        {
+            "name": "Farm",
+            "field": "Farm",
+            "command": "Farm_info",
+            "price": "75",
+            "charge": "+5",
+            "damage": "0"
+        },
+        {
+            "name": "Town",
+            "field": "Town",
+            "command": "Town_info",
+            "price": "75",
+            "charge": "+5",
+            "damage": "0"
+        },
+        {
+            "name": "Violet",
+            "field": "Violet",
+            "command": "Violet_info",
+            "price": "0",
+            "charge": "0",
+            "damage": "0"
+        },
+        {
+            "name": "Influence",
+            "field": "Influence",
+            "command": "Influence_info",
+            "price": "0",
+            "charge": "0",
+            "damage": "0"
+        }
+    ],
+    "Farmer": [
+        {
+            "name": "Farmer",
+            "field": "Farmer",
+            "command": "farner",
+            "price": "10",
+            "charge": "-2",
+            "damage": "1"
+        }
+    ],
+    "Knight": [
+        {
+            "name": "Knight",
+            "field": "Knight",
+            "command": "Knight_info",
+            "price": "20",
+            "charge": "-5",
+            "damage": "2"
+        }
+    ],
+    "Strong Knight": [
+        {
+            "name": "Strong Knight",
+            "field": "Strong Knig",
+            "command": "Strong Knight_info",
+            "price": "30",
+            "charge": "-12",
+            "damage": "3"
+        }
+    ],
+    "Elite Knight": [
+        {
+            "name": "Elite Knight",
+            "field": "Elite Knight",
+            "command": "Elite Knight_info",
+            "price": "40",
+            "charge": "-26",
+            "damage": "4"
+        }
+    ],
+    "Wooden Tower": [
+        {
+            "name": "Wooden Tower",
+            "field": "Tower",
+            "command": "Wooden Tower_info",
+            "price": "5",
+            "charge": "-0",
+            "damage": "2"
+        }
+    ],
+    "Stone Tower": [
+        {
+            "name": "Stone Tower",
+            "field": "Stone Tower",
+            "command": "Stone Tower_info",
+            "price": "10",
+            "charge": "-2",
+            "damage": "3"
+        }
+    ],
+    "Farm": [
+        {
+            "name": "Farm",
+            "field": "Farm",
+            "command": "Farm_info",
+            "price": "75",
+            "charge": "+5",
+            "damage": "0"
+        }
+    ],
+    "Town": [
+        {
+            "name": "Town",
+            "field": "Town",
+            "command": "Town_info",
+            "price": "10",
+            "charge": "0",
+            "damage": "2"
+        }
+    ],
+    "Violet": [
+        {
+            "name": "Violet",
+            "field": "Violet",
+            "command": "Violet_info",
+            "price": "0",
+            "charge": "0",
+            "damage": "0"
+        }
+    ],
+    "Influence": [
+        {
+            "name": "Influence",
+            "field": "Influence",
+            "command": "Influence_info",
+            "price": "0",
+            "charge": "0",
+            "damage": "0"
+        }
+    ]
+}

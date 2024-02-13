@@ -1,0 +1,422 @@
+//import 'dart:math';
+// ignore_for_file: avoid_print
+import 'package:expancion_online/grid.dart';
+import 'package:expancion_online/town.dart';
+import 'package:expancion_online/loader.dart';
+import 'package:expancion_online/routermap.dart';
+import 'package:flame/components.dart';
+import 'package:flame/events.dart';
+//import 'package:flame/extensions.dart';
+import 'package:flame/flame.dart';
+import 'package:flame/game.dart';
+//import 'package:flame/palette.dart';
+//import 'package:flame/sprite.dart';
+//import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/material.dart';
+import 'ui_controller.dart';
+
+final UIDataController uidatacontroller = UIDataController();
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Flame.device.fullScreen();
+
+  final routermap = Routermap("Entry");
+  final assetloader = AssetLoader();
+
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: GameWidget(
+          game: MyExpancionOnline(routermap, assetloader),
+          overlayBuilderMap: {
+            'UIController': (BuildContext context, MyExpancionOnline game) {
+              return UIController(
+                game: game,
+                controller: uidatacontroller,
+                routermap: routermap,
+                assetloader: assetloader,
+              );
+            }
+          },
+        ),
+      ),
+    ),
+  );
+}
+
+class MyExpancionOnline extends FlameGame
+    with ScaleDetector, TapDetector, ScrollDetector {
+  MyExpancionOnline(this.router, this.assetloader);
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+
+    camera.viewfinder
+      ..zoom = scale
+      ..anchor = Anchor.topLeft;
+
+    Sprite backgroundSprite = await loadSprite("map.jpg");
+    background = SpriteComponent()..sprite = backgroundSprite;
+
+    world.add(background);
+    overlays.add('UIController');
+    listgrid.displayOn(background);
+
+    final currentPosition = camera.viewfinder.position;
+
+    camera.viewfinder.position = currentPosition.translated(
+      originx,
+      originy,
+    );
+  }
+
+  final Routermap router;
+  final AssetLoader assetloader;
+  late SpriteComponent background;
+  final Listgrid listgrid = Listgrid(70, 44, "grid", 40);
+  //game statements
+  int bag = 100;
+  int coins = 5;
+
+  int selectedTown = 0;
+  List<Town> towns = [];
+
+  late String currentArea = "";
+
+  void saveStatus() {
+    //Guardar en modo developer
+    listgrid.save();
+    print("save status");
+  }
+
+  void undo() {
+    //Deshacer movimiento
+    print("UNDO");
+  }
+
+  void nextDay() {
+    //Pasar turno
+    print("NEXT DAY");
+  }
+
+  void userback() {
+    if (router.prev().contains("_info") && currentArea.isNotEmpty) {
+      hideArea();
+    }
+  }
+
+  Future<void> showArea() async {
+    //print("show area ${router.command()}");
+    //Mostrar el area disponible para el item seleccionado
+
+    switch (router.command()) {
+      case "Town":
+        final price = int.parse(assetloader.mapstack["Town"]![0]["price"]!);
+        late int onprice = 0;
+        if (towns.isEmpty) {
+          onprice = bag;
+        } else {
+          onprice = towns[selectedTown].bag;
+        }
+        if (onprice >= price) {
+          currentArea = "Town";
+
+          for (var row = 0; row < listgrid.rows; row++) {
+            for (var col = 0; col < listgrid.cols; col++) {
+              final cellcontent = listgrid.get(row, col);
+
+              if (cellcontent == 1) {
+                var offsetx = (row * 40 + 20).toDouble();
+                var offsety = (col * 40 + 20).toDouble();
+
+                final t = await listgrid.sprite(
+                    Vector2(offsetx, offsety), "violet_alpha.png");
+                final index = listgrid.getListGridIndex(row, col);
+                listgrid.listSprite[index].removeFromParent();
+                listgrid.listSprite[index] = t;
+                background.add(t);
+                //listgrid.set(row, col, 101);
+                listgrid.listgrid[index] = 101;
+              }
+            }
+          }
+        }
+        //print("town area ${assetloader.mapstack["Town"]}");
+
+        break;
+      case "Farmer":
+        final price = int.parse(assetloader.mapstack["Farmer"]![0]["price"]!);
+        late int onprice = 0;
+        if (towns.isEmpty) {
+          onprice = bag;
+        } else {
+          onprice = towns[selectedTown].bag;
+        }
+        if (onprice >= price) {
+          print("Area Farmer");
+          currentArea = "Farmer";
+
+          //TODO: hacer rst
+          for (var index in towns[selectedTown].myinfluence) {
+            final coors = listgrid.getCoordsByIndex(index);
+            final row = coors["row"]!;
+            final col = coors["col"]!;
+
+            var offsetx = (row * 40 + 20).toDouble();
+            var offsety = (col * 40 + 20).toDouble();
+
+            final t = await listgrid.sprite(
+                Vector2(offsetx, offsety), "violet_alpha.png");
+
+            background.add(t);
+          }
+        }
+        break;
+      case "Farm":
+        print("farm area");
+        break;
+      case "Violet":
+        currentArea = "Violet";
+
+        for (var row = 0; row < listgrid.rows; row++) {
+          for (var col = 0; col < listgrid.cols; col++) {
+            final cellcontent = listgrid.get(row, col);
+
+            if (cellcontent == 1) {
+              var offsetx = (row * 40 + 20).toDouble();
+              var offsety = (col * 40 + 20).toDouble();
+
+              final t = await listgrid.sprite(
+                  Vector2(offsetx, offsety), "violet_alpha.png");
+              final index = listgrid.getListGridIndex(row, col);
+              listgrid.listSprite[index].removeFromParent();
+              listgrid.listSprite[index] = t;
+              background.add(t);
+              //listgrid.set(row, col, 101);
+              listgrid.listgrid[index] = 101;
+            }
+          }
+        }
+        break;
+      case "Influence":
+        currentArea = "Influence";
+      default:
+        currentArea = "";
+        print("no defined");
+    }
+  }
+
+  Future<void> hideArea() async {
+    currentArea = "";
+    for (var row = 0; row < listgrid.rows; row++) {
+      for (var col = 0; col < listgrid.cols; col++) {
+        final cellcontent = listgrid.get(row, col);
+
+        if (cellcontent > 100) {
+          final offset =
+              Vector2((row * 40 + 20).toDouble(), (col * 40 + 20).toDouble());
+          final t =
+              await listgrid.sprite(Vector2(offset.x, offset.y), "pixel.png");
+          final index = listgrid.getListGridIndex(row, col);
+          listgrid.listSprite[index].removeFromParent();
+          listgrid.listSprite[index] = t;
+          background.add(t);
+          listgrid.listgrid[index] = 1;
+        }
+        if (cellcontent == 11) {
+          final offset =
+              Vector2((row * 40 + 20).toDouble(), (col * 40 + 20).toDouble());
+          final t =
+              await listgrid.sprite(Vector2(offset.x, offset.y), "pixel.png");
+          final index = listgrid.getListGridIndex(row, col);
+          listgrid.listSprite[index].removeFromParent();
+          listgrid.listSprite[index] = t;
+          background.add(t);
+        }
+      }
+    }
+    print("hide area");
+  }
+
+  void money() {
+    if (towns.isEmpty) {
+      uidatacontroller.updateMoney(bag, coins);
+    } else {
+      uidatacontroller.updateMoney(
+          towns[selectedTown].bag, towns[selectedTown].coins);
+    }
+  }
+
+  @override
+  Future<void> onTapUp(TapUpInfo info) async {
+    final tap = camera.globalToLocal(info.eventPosition.global);
+    final row = (tap.x / 40).floor();
+    final col = (tap.y / 40).floor();
+
+    final cellcontent = listgrid.get(row, col);
+    final offset =
+        Vector2((row * 40 + 20).toDouble(), (col * 40 + 20).toDouble());
+    switch (currentArea) {
+      case "Town":
+        if (towns.isEmpty) {
+          towns.add(Town(bag, coins));
+        } else {
+          towns.add(Town(0, 0));
+        }
+
+        final price = int.parse(assetloader.mapstack["Town"]![0]["price"]!);
+        if (towns[selectedTown].bag >= price && cellcontent == 101) {
+          towns[selectedTown].bag -= price;
+
+          //Se coloca el item
+          final t = await listgrid.sprite(
+              Vector2(offset.x, offset.y), assetloader.getImageSrc("Town"));
+          final index = listgrid.getListGridIndex(row, col);
+          listgrid.listSprite[index].removeFromParent();
+          listgrid.listSprite[index] = t;
+          background.add(t);
+          listgrid.listgrid[index] = 10;
+
+          selectedTown = towns.length - 1;
+          listgrid.influence[index] = selectedTown;
+
+          
+          late int indextemp = 0;
+          indextemp = listgrid.getListGridIndex(row - 1, col - 1);
+          listgrid.listgrid[indextemp] = 11;
+          towns[selectedTown].myinfluence.add(indextemp);
+          listgrid.influence[indextemp] = selectedTown;
+          indextemp = listgrid.getListGridIndex(row, col - 1);
+          listgrid.listgrid[indextemp] = 11;
+          towns[selectedTown].myinfluence.add(indextemp);
+          listgrid.influence[indextemp] = selectedTown;
+          indextemp = listgrid.getListGridIndex(row + 1, col - 1);
+          listgrid.listgrid[indextemp] = 11;
+          towns[selectedTown].myinfluence.add(indextemp);
+          listgrid.influence[indextemp] = selectedTown;
+          indextemp = listgrid.getListGridIndex(row - 1, col);
+          listgrid.listgrid[indextemp] = 11;
+          towns[selectedTown].myinfluence.add(indextemp);
+          listgrid.influence[indextemp] = selectedTown;
+          indextemp = listgrid.getListGridIndex(row + 1, col);
+          listgrid.listgrid[indextemp] = 11;
+          towns[selectedTown].myinfluence.add(indextemp);
+          listgrid.influence[indextemp] = selectedTown;
+          indextemp = listgrid.getListGridIndex(row - 1, col + 1);
+          listgrid.listgrid[indextemp] = 11;
+          towns[selectedTown].myinfluence.add(indextemp);
+          listgrid.influence[indextemp] = selectedTown;
+          indextemp = listgrid.getListGridIndex(row, col + 1);
+          listgrid.listgrid[indextemp] = 11;
+          towns[selectedTown].myinfluence.add(indextemp);
+          listgrid.influence[indextemp] = selectedTown;
+          indextemp = listgrid.getListGridIndex(row + 1, col + 1);
+          listgrid.listgrid[indextemp] = 11;
+          towns[selectedTown].myinfluence.add(indextemp);
+          listgrid.influence[indextemp] = selectedTown;
+        }
+        money();
+        await hideArea();
+
+        if (towns[selectedTown].bag >= price) {
+          await showArea();
+        } else {
+          uidatacontroller.goback();
+        }
+
+        break;
+      case "Violet":
+        var offsetx = (row * 40 + 20).toDouble();
+        var offsety = (col * 40 + 20).toDouble();
+
+        // final t = await listgrid.sprite(
+        //     Vector2(offsetx, offsety), "violet_alpha.png");
+        // listgrid.listSprite.add(t);
+        // background.add(t);
+
+        final t = await listgrid.sprite(
+            Vector2(offsetx, offsety), "violet_alpha.png");
+        final index = listgrid.getListGridIndex(row, col);
+        listgrid.listSprite[index].removeFromParent();
+        listgrid.listSprite[index] = t;
+        background.add(t);
+        listgrid.set(row, col, 1);
+        //listgrid.listgrid[index] = 1;
+        print("put violet");
+        break;
+      case "Influence":
+        var offsetx = (row * 40 + 20).toDouble();
+        var offsety = (col * 40 + 20).toDouble();
+
+        // final t = await listgrid.sprite(
+        //     Vector2(offsetx, offsety), "violet_alpha.png");
+        // listgrid.listSprite.add(t);
+        // background.add(t);
+
+        final t =
+            await listgrid.sprite(Vector2(offsetx, offsety), "black_alpha.png");
+        final index = listgrid.getListGridIndex(row, col);
+
+        background.add(t);
+      default:
+        final index = listgrid.getListGridIndex(row, col);
+        if (listgrid.influence[index] >= 0) {
+          selectedTown = listgrid.influence[index];
+          money();
+          print("is selected ${index}, ${listgrid.influence[index]}");
+        } else {
+          print("no have influence");
+        }
+    }
+    // saco = await listgrid.tapHandler(
+    //     camera.globalToLocal(info.eventPosition.global),
+    //     source,
+    //     stacks,
+    //     router,
+    //     background,
+    //     saco);
+    // money();
+  }
+
+  final double _maxZoom = 2;
+  final double _minZoom = 0.3;
+  double scale = .5;
+  double originx = 500;
+  double originy = 100;
+  double oldscale = 1;
+  @override
+  void onScroll(PointerScrollInfo info) {
+    final currentPosition = camera.viewfinder.position;
+
+    var mousex = info.eventPosition.global.x;
+    var mousey = info.eventPosition.global.y;
+
+    //final mapSize = Offset(background.width, background.height);
+    final worldRect = camera.visibleWorldRect;
+
+    var deltaZoom = info.scrollDelta.global.y > 0 ? 0.01 : -0.01;
+
+    final newZoom = camera.viewfinder.zoom + deltaZoom;
+    var clampedZoom = newZoom.clamp(_minZoom, _maxZoom);
+    final oldscale = camera.viewfinder.zoom;
+
+    originx = (mousex / oldscale) - (mousex / clampedZoom);
+    originy = (mousey / oldscale) - (mousey / clampedZoom);
+
+    if (worldRect.topLeft.dx + originx < 0) {
+      originx = 0;
+    }
+    if (worldRect.topLeft.dy + originy < 0) {
+      originy = 0;
+    }
+
+    camera.viewfinder.zoom = clampedZoom;
+
+    camera.viewfinder.position = currentPosition.translated(
+      originx,
+      originy,
+    );
+  }
+}
